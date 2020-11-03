@@ -12,7 +12,7 @@ class LoghouseQueryTimeP < Parslet::Parser
   rule(:time) { from_now.as(:from_now) | now.as(:now) }
 
   root :time
-
+  # 对前端传递的查询时间参数进行过滤
   def parse_time(str)
     begin
       parsed = parse(str)

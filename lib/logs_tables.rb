@@ -1,4 +1,6 @@
 module LogsTables
+  # DB 相关环境变量获取
+  # 常量
   DATABASE            = ENV.fetch('CLICKHOUSE_DATABASE')            { 'logs' }
   TABLE_NAME          = ENV.fetch('CLICKHOUSE_LOGS_TABLE')          { 'logs' }
   TIMESTAMP_ATTRIBUTE = ENV.fetch('CLICKHOUSE_TIMESTAMP_ATTRIBUTE') { 'timestamp' }
@@ -18,8 +20,11 @@ module LogsTables
     stream: 'String'
   }.freeze
 
+  # 接口
   module_function
 
+  # 初始化所有数据库表，通过如下脚本调用：
+  # 创建 buffer 表
   def create_buffer_table(force: false)
     engine = "Buffer(#{DATABASE}, #{TABLE_NAME}, 16, 30, 60, 100, 10000, 1048576, 10485760)"
     table_name = "#{TABLE_NAME}_buffer"
@@ -27,6 +32,7 @@ module LogsTables
     create_table table_name, create_table_sql(table_name, engine), force: force
   end
 
+  # 创建 logs 表
   def create_storage_table(force: false)
     engine = "MergeTree() PARTITION BY (date) ORDER BY (#{TIMESTAMP_ATTRIBUTE}, #{NSEC_ATTRIBUTE}, namespace, container_name) TTL date + INTERVAL #{RETENTION_PERIOD} DAY DELETE SETTINGS index_granularity=32768"
     table_name = TABLE_NAME
@@ -34,6 +40,7 @@ module LogsTables
     create_table table_name, create_table_sql(table_name, engine), force: force
   end
 
+  # 创建 migration 表
   def create_migration_table(force: false)
     engine = "MergeTree() PARTITION BY (timestamp) ORDER BY (timestamp)"
     table_name = DB_VERSION_TABLE
@@ -54,6 +61,7 @@ module LogsTables
     round_time_to_partition(time) - PARTITION_PERIOD.hours
   end
 
+  # 私有方法
   private
 
   module_function

@@ -1,4 +1,6 @@
 class User
+  # PERMISSONS_FILE_PATH 环境变量保存用户权限配置文件路径
+  # 用户认证交给 nginx 代理处理，loghouse 通过简单的配置进行权限管理
   PERMISSONS_FILE_PATH = ENV.fetch('PERMISSONS_FILE_PATH') { 'config/permissions.yml' }
   class PermissionsNotFound < StandardError; end
 

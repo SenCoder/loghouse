@@ -1,4 +1,5 @@
 module Loghouse
+  # datepicker 时间选择器
   SUPER_DATEPICKER_PRESETS = {
     last_days: [
       { name: 'Last 2 days', from: 'now-2d', to: 'now' },

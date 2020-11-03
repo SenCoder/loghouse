@@ -5,6 +5,7 @@ TRUE_VALUES = %w[1 on true]
 
 Time.zone = Loghouse::TIME_ZONE
 
+# DO_DB_DEPLOY=true rake create_logs_tables
 task :create_logs_tables do
   force = TRUE_VALUES.include?(ENV['FORCE'])
   do_db_deploy = TRUE_VALUES.include?(ENV['DO_DB_DEPLOY'])
