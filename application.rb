@@ -4,7 +4,7 @@ module Loghouse
   TIME_ZONE = ENV.fetch('TIME_ZONE') { 'Europe/Moscow' }
 
   class UnauthenticatedError < StandardError; end
-
+  # 服务接口定义
   # rubocop:disable Metrics/ClassLength
   class Application < Sinatra::Base
     configure do
@@ -26,10 +26,12 @@ module Loghouse
       end
     end
 
+    # 对路由 / 的 get 请求被重定向到 /query
     get '/' do
       redirect '/query'
     end
 
+    # 查询日志主页面
     get '/query', provides: [:html, :csv] do
       @query =  if params[:query_id]
                   @tab = params[:query_id]
@@ -61,6 +63,7 @@ module Loghouse
       end
     end
 
+    # 查询模板管理
     # Queries management
     before '/queries*' do
       @tab = :queries
@@ -72,11 +75,13 @@ module Loghouse
       erb :'queries/index'
     end
 
+    # 获取查询添加页面
     get '/queries/new' do
       @query = query_from_params
       erb :'queries/new'
     end
 
+    # post 提交添加的新查询
     post '/queries' do
       @query = query_from_params
 
@@ -95,12 +100,14 @@ module Loghouse
       erb :'queries/new'
     end
 
+    # 获取更新查询页面
     get '/queries/:query_id/edit' do
       @query = LoghouseQuery.find!(params[:query_id])
 
       erb :'queries/edit'
     end
 
+    # 拖动改变查询模板的顺序，该接口出现 500 错误
     put '/queries/update_order' do
       new_order = JSON.parse(params[:new_order])
       LoghouseQuery.update_order!(new_order)
@@ -109,6 +116,7 @@ module Loghouse
       { status: :ok }.to_json
     end
 
+    # 提交查询修改请求，运行的 demo 该接口似乎是 post 实现而非 put
     put '/queries/:query_id' do
       @query = LoghouseQuery.find!(params[:query_id])
       begin
@@ -126,6 +134,7 @@ module Loghouse
       erb :'queries/edit'
     end
 
+    # 删除单条查询模板
     delete '/queries/:query_id' do
       query = LoghouseQuery.find!(params[:query_id])
       query.destroy!
@@ -133,6 +142,7 @@ module Loghouse
       ''
     end
 
+    # 批量删除查询模板
     delete '/queries' do
       LoghouseQuery.create_table!(true)
 
