@@ -40,6 +40,7 @@ module Loghouse
                   query_from_params
                 end
 
+      # 异常捕获
       begin
         @query.validate!(name: false)
       rescue LoghouseQuery::BadFormat => e

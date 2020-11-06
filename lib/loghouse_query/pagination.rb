@@ -1,6 +1,7 @@
 class LoghouseQuery
   module Pagination
     DEFAULT_PER_PAGE = 250
+    # attr_reader 属性通过实例在外部直接访问，只能读，不可写；可以通过提供方法修改
     attr_reader :per_page, :older_than, :newer_than
 
     alias :limit :per_page

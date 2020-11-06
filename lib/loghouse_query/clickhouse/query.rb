@@ -8,8 +8,9 @@ class LoghouseQuery
       end
 
       def subquery
+        # subquery 为空直接返回
         return if query[:subquery].blank?
-
+        # 创建 subquery
         @subquery ||= self.class.new(query[:subquery][:query], query[:subquery][:q_op])
       end
 
@@ -18,6 +19,7 @@ class LoghouseQuery
       end
 
       def to_s
+        # Query 类构建构建 Expression 类
         result = "(#{Expression.new(query[:expression]).to_s})"
 
         result = [result, "#{subquery.operator}\n", subquery.to_s].join(' ') if subquery

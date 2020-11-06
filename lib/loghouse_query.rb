@@ -7,14 +7,18 @@ require 'loghouse_query/csv'
 require 'log_entry'
 require 'log'
 
+# lib\loghouse_query 的所有源文件为此类服务
+# LoghouseQuery 通过 include 些模块，继承了其中的方法
 class LoghouseQuery
   include Parsers
   include Storable
-  include Pagination
-  include Clickhouse
+  include Pagination  # E:\Developer\loghouse\lib\loghouse_query\pagination.rb
+  include Clickhouse  # E:\Developer\loghouse\lib\loghouse_query\clickhouse.rb
   include Permissions
   include CSV
 
+  # 类的内部定义常量
+  # 在类的外部访问常量，使用 classname::constant
   TIME_PARAMS_DEFAULTS = {
     format:  'seek_to',
     seek_to: 'now',
@@ -22,6 +26,9 @@ class LoghouseQuery
     to:      'now'
   }.freeze
 
+  # attr_accessor 属性通过实例直接访问可读也可写
+  # attr_writer 属性过实例直接访问只能写不能读
+  # attr_reader 属性过实例直接访问只能读不能写
   attr_accessor :attributes, :time_params, :persisted
 
   def initialize(attrs = {})
@@ -45,7 +52,7 @@ class LoghouseQuery
     case @time_params[:format]
     when 'seek_to'
       @time_params.slice!(:format, :seek_to)
-    when 'range'
+    when params
       @time_params.slice!(:format, :from, :to)
     end
     self

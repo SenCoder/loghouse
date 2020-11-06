@@ -1,4 +1,5 @@
 class LogEntry
+  # 类方法定义 self.method
   def self.from_result_set(result_set)
     result_set.map { |r| new r.to_hash }
   end

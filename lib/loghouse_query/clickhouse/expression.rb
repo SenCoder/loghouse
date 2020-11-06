@@ -36,6 +36,7 @@ class LoghouseQuery
         @label_key || @custom_key
       end
 
+      # 转换为查询语句字符串
       def to_s
         case operator
         when 'not_null', 'is_null'
